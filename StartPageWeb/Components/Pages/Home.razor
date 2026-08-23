@@ -1,20 +1,68 @@
-﻿@page "/"
+﻿@using StartPageWeb.Components.Handler
+@using StartPageWeb.Components.Models;
+@using StartPageWeb.Components.Interfaces;
+@page "/"
 
 <PageTitle>StartPage</PageTitle>
 
 
-<MudContainer Style="border: 2px solid blue" Fixed="true" Class="d-flex flex-row gap-4">
-    
-    <MudContainer Style="border: 2px solid red" Class="flex-auto">
-        Column 1
-    </MudContainer>
-    <MudContainer Style="border: 2px solid red" Class="flex-auto">
-        Column 2
-    </MudContainer>
-    <MudContainer Style="border: 2px solid red" Class="flex-auto">
-        Column 3
-    </MudContainer>
-    
-</MudContainer>
+<MudDropContainer 
+    T="IColumnEntry" 
+    Items="_entries" 
+    ItemsSelector="@((item, dropzone) => item.ColumnIdentifier == dropzone)"
+    ItemDropped="ItemUpdated"
+    Class="d-flex flex-row gap-4"
+    Fixed="true">
+    <ChildContent>
+        @foreach (StartPageColumn column in _startPage.Columns)
+        {
+            <MudDropZone 
+                T="IColumnEntry" 
+                Identifier="@column.Identifier" 
+                AllowReorder="true"
+                Class="flex-auto">
+            </MudDropZone>
+        }
+    </ChildContent>
+    <ItemRenderer>
+        <MudPaper Class="pa-4 my-4">
+            <MudText>@context.Title</MudText>
+        </MudPaper>
+    </ItemRenderer>
+</MudDropContainer>
 
 
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() => StartPageToDropZones());
+    }
+    
+    private StartPage _startPage =  StartPageHandler.StartPages[0];
+
+    private List<StartPageColumn> _columns = new List<StartPageColumn>();
+    private List<IColumnEntry> _entries = new List<IColumnEntry>();
+
+    private void StartPageToDropZones()
+    {
+        _columns = _startPage.Columns;
+        foreach (StartPageColumn column in _startPage.Columns)
+        {
+            _entries.AddRange(column.Entries);
+        }
+    }
+
+    private void ItemUpdated(MudItemDropInfo<IColumnEntry> dropItem)
+    {
+        if (dropItem.Item == null)
+        {
+            return;
+        }
+        
+        dropItem.Item.ColumnIdentifier = dropItem.DropzoneIdentifier;
+        dropItem.Item.Index = dropItem.IndexInZone;
+    }
+
+
+}

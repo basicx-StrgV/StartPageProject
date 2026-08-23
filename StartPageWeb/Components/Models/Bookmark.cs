@@ -5,10 +5,10 @@
         /// <summary>
         /// Gets or sets the title of the bookmark.
         /// </summary>
-        public string Title { get; set; }
+        public required string Title { get; set; }
         /// <summary>
         /// Gets or sets the URL of the bookmarks.
         /// </summary>
-        public string Url { get; set; }
+        public required string Url { get; set; }
     }
 }
