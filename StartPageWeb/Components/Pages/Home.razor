@@ -53,7 +53,7 @@ else
             {
                 <MudPaper Class="pa-4 my-4">
                     <MudText Typo="Typo.h6">@context.Title</MudText>
-                    @if (!_dragActiv)
+                    @if (!_dragActive)
                     {
                         <MudDivider DividerType="DividerType.FullWidth" Style="margin-bottom: 4px"></MudDivider>
                         <MudMarkdown Value="@context.Markdown" />
@@ -67,18 +67,18 @@ else
 
 @code
 {
-    private bool _dragActiv = false;
+    private bool _dragActive = false;
     
     private RenderStartPage? _startPage =  StartPageHandler.GetMainStartPage()?.GetRenderComponents();
 
     private void ItemPicked()
     {
-        _dragActiv = true;
+        _dragActive = true;
     }
     
     private void ItemUpdated(MudItemDropInfo<RenderColumnEntry> dropItem)
     {
-        _dragActiv = false;
+        _dragActive = false;
         
         if (dropItem.Item == null)
         {
