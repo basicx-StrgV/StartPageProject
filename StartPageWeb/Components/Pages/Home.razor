@@ -1,68 +1,91 @@
 ﻿@using StartPageWeb.Components.Handler
 @using StartPageWeb.Components.Models;
-@using StartPageWeb.Components.Interfaces;
+@using StartPageWeb.Components.Enums;
 @page "/"
 
 <PageTitle>StartPage</PageTitle>
 
-
-<MudDropContainer 
-    T="IColumnEntry" 
-    Items="_entries" 
-    ItemsSelector="@((item, dropzone) => item.ColumnIdentifier == dropzone)"
-    ItemDropped="ItemUpdated"
-    Class="d-flex flex-row gap-4"
-    Fixed="true">
-    <ChildContent>
-        @foreach (StartPageColumn column in _startPage.Columns)
-        {
-            <MudDropZone 
-                T="IColumnEntry" 
-                Identifier="@column.Identifier" 
-                AllowReorder="true"
-                Class="flex-auto">
-            </MudDropZone>
-        }
-    </ChildContent>
-    <ItemRenderer>
-        <MudPaper Class="pa-4 my-4">
-            <MudText>@context.Title</MudText>
-        </MudPaper>
-    </ItemRenderer>
-</MudDropContainer>
+@if (_startPage == null)
+{
+    <MudContainer Fixed="true" Class="d-flex flex-row gap-4" Style="height: 75vh">
+        <MudContainer Class="flex-1" Style="height: 100%">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Style="height: 100%"></MudSkeleton>
+        </MudContainer>
+        <MudContainer Class="flex-1" Style="height: 100%">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Style="height: 100%"></MudSkeleton>
+        </MudContainer>
+        <MudContainer Class="flex-1" Style="height: 100%">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Style="height: 100%"></MudSkeleton>
+        </MudContainer>
+        <MudContainer Class="flex-1" Style="height: 100%">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Style="height: 100%"></MudSkeleton>
+        </MudContainer>
+    </MudContainer>
+}
+else
+{
+    <MudDropContainer 
+        T="RenderColumnEntry" 
+        Items="_startPage.Entries" 
+        ItemsSelector="@((item, dropzone) => item.ColumnId == dropzone)"
+        ItemDropped="ItemUpdated"
+        ItemPicked="ItemPicked"
+        Class="d-flex flex-row justify-space-around gap-4">
+        <ChildContent>
+            @foreach (RenderColumn column in _startPage.Columns)
+            {
+                <MudDropZone 
+                    T="RenderColumnEntry" 
+                    Identifier="@column.Identifier" 
+                    AllowReorder="true"
+                    Class="flex-1">
+                </MudDropZone>
+            }
+        </ChildContent>
+        <ItemRenderer>
+            @if (context.Type == ColumnEntryType.Bookmarks)
+            {
+                <MudPaper Class="pa-4 my-4">
+                    <MudText Typo="Typo.h6">@context.Title</MudText>
+                </MudPaper>
+            }
+            else if (context.Type == ColumnEntryType.Notes)
+            {
+                <MudPaper Class="pa-4 my-4">
+                    <MudText Typo="Typo.h6">@context.Title</MudText>
+                    @if (!_dragActiv)
+                    {
+                        <MudDivider DividerType="DividerType.FullWidth" Style="margin-bottom: 4px"></MudDivider>
+                        <MudMarkdown Value="@context.Markdown" />
+                    }
+                </MudPaper>
+            }
+        </ItemRenderer>
+    </MudDropContainer>
+}
 
 
 @code
 {
-    protected override async Task OnInitializedAsync()
+    private bool _dragActiv = false;
+    
+    private RenderStartPage? _startPage =  StartPageHandler.GetMainStartPage()?.GetRenderComponents();
+
+    private void ItemPicked()
     {
-        await Task.Run(() => StartPageToDropZones());
+        _dragActiv = true;
     }
     
-    private StartPage _startPage =  StartPageHandler.StartPages[0];
-
-    private List<StartPageColumn> _columns = new List<StartPageColumn>();
-    private List<IColumnEntry> _entries = new List<IColumnEntry>();
-
-    private void StartPageToDropZones()
+    private void ItemUpdated(MudItemDropInfo<RenderColumnEntry> dropItem)
     {
-        _columns = _startPage.Columns;
-        foreach (StartPageColumn column in _startPage.Columns)
-        {
-            _entries.AddRange(column.Entries);
-        }
-    }
-
-    private void ItemUpdated(MudItemDropInfo<IColumnEntry> dropItem)
-    {
+        _dragActiv = false;
+        
         if (dropItem.Item == null)
         {
             return;
         }
         
-        dropItem.Item.ColumnIdentifier = dropItem.DropzoneIdentifier;
+        dropItem.Item.ColumnId = dropItem.DropzoneIdentifier;
         dropItem.Item.Index = dropItem.IndexInZone;
     }
-
-
 }

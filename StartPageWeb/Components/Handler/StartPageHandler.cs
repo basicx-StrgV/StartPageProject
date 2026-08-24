@@ -6,11 +6,11 @@ namespace StartPageWeb.Components.Handler
 {
     public static class StartPageHandler
     {
-        public static List<StartPage> StartPages { get; set; } = [];
+        private static List<StartPage> _startPages = [];
 
         static StartPageHandler()
         {
-            StartPages.Add(new StartPage()
+            _startPages.Add(new StartPage()
                 {
                     Name = "Main",
                     IsMainPage = true,
@@ -18,111 +18,117 @@ namespace StartPageWeb.Components.Handler
                     {
                         new StartPageColumn()
                         {
-                            Identifier = "9f93661e-15ca-4aec-8c2c-5082b2a6e770", 
-                            Column = 0,
                             Entries = new List<IColumnEntry>()
                             {
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Homelab",
-                                    ColumnIdentifier = "9f93661e-15ca-4aec-8c2c-5082b2a6e770",
                                     Type = ColumnEntryType.Bookmarks
                                 },
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Series",
-                                    ColumnIdentifier = "9f93661e-15ca-4aec-8c2c-5082b2a6e770",
                                     Type = ColumnEntryType.Bookmarks
                                 },
                                 new NoteEntry()
                                 {
                                     Title = "Notes",
-                                    ColumnIdentifier = "9f93661e-15ca-4aec-8c2c-5082b2a6e770",
                                     Type = ColumnEntryType.Notes,
-                                    Markdown = "**Sample**  Sample Text"
+                                    Markdown = "**Sample** <br/> Sample Text"
                                 }
                             }
                         },
                         new StartPageColumn()
                         {
-                            Identifier = "da3d1236-90a0-45b9-92b7-300750a92543", 
-                            Column = 1,
                             Entries = new List<IColumnEntry>()
                             {
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Main",
-                                    ColumnIdentifier = "da3d1236-90a0-45b9-92b7-300750a92543",
                                     Type = ColumnEntryType.Bookmarks
                                 }, 
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Streaming",
-                                    ColumnIdentifier = "da3d1236-90a0-45b9-92b7-300750a92543",
                                     Type = ColumnEntryType.Bookmarks
                                 },
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Payment",
-                                    ColumnIdentifier = "da3d1236-90a0-45b9-92b7-300750a92543",
                                     Type = ColumnEntryType.Bookmarks
                                 }
                             }
                         },
                         new StartPageColumn()
                         {
-                            Identifier = "6dbbe1f3-1fd4-40b0-beb0-ffe30477134b", 
-                            Column = 2,
                             Entries = new List<IColumnEntry>()
                             {
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Games",
-                                    ColumnIdentifier = "6dbbe1f3-1fd4-40b0-beb0-ffe30477134b",
                                     Type = ColumnEntryType.Bookmarks
                                 },
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Bookmarks",
-                                    ColumnIdentifier = "6dbbe1f3-1fd4-40b0-beb0-ffe30477134b",
                                     Type = ColumnEntryType.Bookmarks
                                 },
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Programming",
-                                    ColumnIdentifier = "6dbbe1f3-1fd4-40b0-beb0-ffe30477134b",
                                     Type = ColumnEntryType.Bookmarks
                                 }
                             }
                         },
                         new StartPageColumn()
                         {
-                            Identifier = "3101bb42-af64-4d7c-9057-4cc415b97d33", 
-                            Column = 3,
                             Entries = new List<IColumnEntry>()
                             {
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Shopping",
-                                    ColumnIdentifier = "3101bb42-af64-4d7c-9057-4cc415b97d33",
                                     Type = ColumnEntryType.Bookmarks
                                 },
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "3D-Printing",
-                                    ColumnIdentifier = "3101bb42-af64-4d7c-9057-4cc415b97d33",
                                     Type = ColumnEntryType.Bookmarks
                                 },
-                                new Bookmarks()
+                                new BookmarkGroup()
                                 {
                                     Title = "Other",
-                                    ColumnIdentifier = "3101bb42-af64-4d7c-9057-4cc415b97d33",
                                     Type = ColumnEntryType.Bookmarks
                                 },
                             }
                         }
                     }
                 });
+        }
+
+        public static StartPage? GetStartPageByName(string name)
+        {
+            foreach (StartPage startPage in _startPages)
+            {
+                if (startPage.Name == name)
+                {
+                    return startPage;
+                }
+            }
+            
+            return null;
+        }
+        
+        public static StartPage? GetMainStartPage()
+        {
+            foreach (StartPage startPage in _startPages)
+            {
+                if (startPage.IsMainPage)
+                {
+                    return startPage;
+                }
+            }
+            
+            return null;
         }
     }
 }

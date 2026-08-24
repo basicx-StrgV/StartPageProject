@@ -1,3 +1,4 @@
+using MudBlazor;
 using MudBlazor.Services;
 using StartPageWeb.Components;
 using StartPageWeb.Components.Interfaces;
@@ -13,6 +14,7 @@ public class Program
 
         // Add MudBlazor services
         builder.Services.AddMudServices();
+        builder.Services.AddMudMarkdownServices();
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
